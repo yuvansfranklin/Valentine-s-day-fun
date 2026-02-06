@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -46,9 +46,13 @@ button{
   50%{transform:scale(1.2)}
   100%{transform:scale(1)}
 }
+footer{
+  margin-top:25px;
+  font-size:14px;
+}
 footer a{
   color:#555;
-  margin:0 8px;
+  margin:0 6px;
   cursor:pointer;
   text-decoration:none;
 }
@@ -57,135 +61,155 @@ footer a{
 
 <body>
 
-<!-- MAIN -->
-<div class="card" id="main">
-<h2>💘 Cute Savage Valentine</h2>
-<p>Send a Valentine… even <b>you</b> won’t know what it says 😌</p>
+<!-- SENDER -->
+<div class="card" id="sendBox">
+  <h2>💘 Cute Savage Valentine</h2>
+  <p>Send a Valentine… even <b>you</b> won’t know what it says 😌</p>
 
-<input id="from" placeholder="Your Name 😎">
-<input id="to" placeholder="Their Name 👀">
+  <input id="from" placeholder="Your Name 😎">
+  <input id="to" placeholder="Their Name 👀">
 
-<select id="type">
-<option value="">Choose Category</option>
-<option value="friend">Friend 😎</option>
-<option value="crush">Crush 😳</option>
-<option value="lover">Lover 💘</option>
-<option value="family">Family 🤍</option>
-<option value="ex">Ex 😌</option>
-</select>
+  <select id="cat">
+    <option value="">Choose Category</option>
+    <option value="friend">Friend 😎</option>
+    <option value="crush">Crush 😳</option>
+    <option value="lover">Lover 💘</option>
+    <option value="family">Family 🤍</option>
+    <option value="ex">Ex 😌</option>
+  </select>
 
-<button onclick="sendValentine()">Send Valentine 💌</button>
+  <button onclick="send()">Send Valentine 💌</button>
 </div>
 
 <!-- SENT -->
-<div class="card hidden" id="sent">
-<h3>💌 Sent!</h3>
-<p>Only they will know what they received 😏</p>
-<input id="link" readonly>
-<button onclick="copyLink()">Copy Link 🔗</button>
-<button onclick="shareWA()">Share on WhatsApp 📲</button>
+<div class="card hidden" id="sentBox">
+  <h3>💌 Sent!</h3>
+  <p>Only they will know what they received 😏</p>
+  <input id="link" readonly>
+  <button onclick="copyLink()">Copy Link 🔗</button>
+  <button onclick="shareWA()">Share on WhatsApp 📲</button>
 </div>
 
-<!-- COVER -->
-<div class="card hidden" id="cover">
-<h3>💌 Someone sent you a Valentine</h3>
-<p>Tap to open…</p>
-<div class="heart" onclick="openCard()">❤️</div>
+<!-- RECEIVER COVER -->
+<div class="card hidden" id="coverBox">
+  <h3>💌 Someone sent you a Valentine</h3>
+  <p>Tap to open…</p>
+  <div class="heart" onclick="openCard()">❤️</div>
 </div>
 
-<!-- MESSAGE -->
-<div class="card hidden" id="message">
-<h3>Your Valentine 💖</h3>
-<p id="msg"></p>
-<p id="names"></p>
-<button onclick="goHome()">Send One Back 😏</button>
+<!-- RECEIVER MESSAGE -->
+<div class="card hidden" id="msgBox">
+  <h3>Your Valentine 💖</h3>
+  <p id="message"></p>
+  <p id="names"></p>
+  <p><small>📸 Screenshot it. Don’t explain 😌</small></p>
+  <button onclick="goHome()">Send One Back 😏</button>
 </div>
 
 <footer>
-<a onclick="goHome()">Home</a>
+  <a onclick="goHome()">Home</a>
 </footer>
 
 <script>
-/* 🔒 BASE URL – MUST MATCH YOUR REPO */
+/* 🔐 BASE URL (CHANGE ONLY THIS IF REPO NAME CHANGES) */
 const BASE_URL = "https://soolaimanmohamed-ship-it.github.io/Valentine-s-day/";
 
-/* Messages */
+/* 💬 EMOJI MESSAGES (SAFE PLACE) */
 const messages = {
-  friend:["Unlimited teasing rights 😌","Bestie vibes 😎","Chaos but loyal 😂","Friendship > everything"],
-  crush:["Low-key obsessed 😏","This took courage 😳","Not flirting… maybe 👀","Rent-free in my head"],
-  lover:["You’re my Valentine 😌","You’re home 🏠","Always you 💘","Soft love 💞"],
-  family:["Family is everything 🤍","Forever grateful 🙏","Home is you 🏡","Love without conditions"],
-  ex:["No hate, just growth 😌","Chapter closed 📕","Boundaries matter 🚧","Moved on 💨"]
+  friend: [
+    "Bestie energy only 😎🔥",
+    "Chaos but loyal 😂💯",
+    "Friendship > everything 🤝💖"
+  ],
+  crush: [
+    "Low-key obsessed 😏💘",
+    "This took courage 😳🔥",
+    "Not flirting… maybe 👀😌"
+  ],
+  lover: [
+    "Always you 💞🥹",
+    "You’re my peace 😌💖",
+    "Home is you 🏠💘"
+  ],
+  family: [
+    "Forever grateful 🤍🙏",
+    "Family = strength 💪🫶",
+    "Love without conditions 🏡💖"
+  ],
+  ex: [
+    "No hate, just growth 😌✨",
+    "Lesson learned 📖💭",
+    "Chapter closed 🚪🔥"
+  ]
 };
 
+/* 🧹 HELPER */
 function hideAll(){
-  document.querySelectorAll('.card').forEach(c=>c.classList.add('hidden'));
+  document.querySelectorAll(".card").forEach(c=>c.classList.add("hidden"));
 }
 
-/* SENDER */
-function sendValentine(){
-  const f = document.getElementById("from").value.trim();
-  const t = document.getElementById("to").value.trim();
-  const tp = document.getElementById("type").value;
+/* ✉️ SENDER */
+function send(){
+  const f = from.value.trim();
+  const t = to.value.trim();
+  const c = cat.value;
 
-  if(!f || !t || !tp){
-    alert("Please fill all fields 🙂");
+  if(!f || !t || !c){
+    alert("Fill all fields 🙂");
     return;
   }
 
-  const msg = messages[tp][Math.floor(Math.random()*messages[tp].length)];
-
-  const payload = btoa(unescape(encodeURIComponent(
-    JSON.stringify({f,t,m:msg})
-  )));
-
-  const finalLink = BASE_URL + "?v=" + payload;
+  const url =
+    BASE_URL +
+    "?cat=" + encodeURIComponent(c) +
+    "&from=" + encodeURIComponent(f) +
+    "&to=" + encodeURIComponent(t);
 
   hideAll();
-  document.getElementById("sent").classList.remove("hidden");
-  document.getElementById("link").value = finalLink;
+  sentBox.classList.remove("hidden");
+  link.value = url;
 }
 
-/* COPY */
+/* 📋 COPY */
 function copyLink(){
-  const l = document.getElementById("link");
-  l.select();
+  link.select();
   document.execCommand("copy");
   alert("Link copied 😌");
 }
 
-/* WHATSAPP */
+/* 📲 WHATSAPP */
 function shareWA(){
-  const text = "💘 Someone sent you a Valentine… only you can see it 😌\n\n" +
-               document.getElementById("link").value;
-  window.open("https://wa.me/?text="+encodeURIComponent(text));
+  const text =
+    "💘 Someone sent you a Valentine…\nOnly you can see it 😌\n\n" +
+    link.value;
+  window.open("https://wa.me/?text=" + encodeURIComponent(text));
 }
 
-/* RECEIVER */
+/* 📥 RECEIVER */
 const params = new URLSearchParams(window.location.search);
-if(params.has("v")){
-  try{
-    const decoded = JSON.parse(
-      decodeURIComponent(escape(atob(params.get("v"))))
-    );
-    hideAll();
-    document.getElementById("cover").classList.remove("hidden");
-    window.card = decoded;
-  }catch(e){
-    alert("Invalid Valentine link 💔");
-    window.location.href = BASE_URL;
-  }
-}
-
-function openCard(){
+if(params.has("cat") && params.has("from") && params.has("to")){
   hideAll();
-  document.getElementById("message").classList.remove("hidden");
-  document.getElementById("msg").innerText = window.card.m;
-  document.getElementById("names").innerText =
-    "From: " + window.card.f + " → To: " + window.card.t;
+  coverBox.classList.remove("hidden");
+
+  window.rcv = {
+    cat: params.get("cat"),
+    from: params.get("from"),
+    to: params.get("to")
+  };
 }
 
-/* RESET */
+/* ❤️ OPEN CARD */
+function openCard(){
+  const list = messages[rcv.cat];
+  const msg = list[Math.floor(Math.random()*list.length)];
+
+  hideAll();
+  msgBox.classList.remove("hidden");
+  message.innerText = msg;
+  names.innerText = "From: " + rcv.from + " → To: " + rcv.to;
+}
+
+/* 🔁 RESET */
 function goHome(){
   window.location.href = BASE_URL;
 }
